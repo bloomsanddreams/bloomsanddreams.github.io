@@ -1,0 +1,42 @@
+define(['jquery', 'internal/sitebuilder/common/ModuleClassLoader'],
+function($, ModuleClassLoader) {
+	var module = {}, extend = {};
+
+	// SubModules
+		extend.submodules = {"image":{"moduleType":"image"},"title":{"moduleType":"title"},"text":{"moduleType":"text"},"button":{"moduleType":"button"}};
+
+	// Module Styles
+	extend.styles = {"default":{"global":{"css":"view.less"},"instance":{"css":"view.each.less"},"slug":"default"}};
+	if (!extend.styles['default']['global']) {
+		extend.styles['default']['global'] = {};
+	}
+	extend.styles['default']['global']['js'] = null;
+	extend.defaultStyle = extend.styles['default'];
+
+	// View JS
+	module.describeSubmodules = function() {
+	var self = this,
+	buckets = self.el.find(".w-bucket"),
+	submoduleDescriptions = [];
+	$.each(buckets, function(bucketIndex) {
+		var bucket = buckets.eq(bucketIndex),
+		submodules = bucket.find(".webs-submodule");
+		$.each(submodules, function(submoduleIndex) {
+			var submodule = submodules.eq(submoduleIndex),
+			    slug = submodule.attr("webs-submodule-slug");
+			submoduleDescriptions.push({
+				name: slug + bucketIndex,
+				    el: submodule,
+				    slug: slug,
+
+				data: self.data.cols[bucketIndex][slug]
+			});
+		});
+	});
+	return submoduleDescriptions;
+};
+
+
+
+	return ModuleClassLoader.register('buckets', module, extend);
+});
